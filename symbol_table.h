@@ -38,9 +38,19 @@ public:
 	st_.add_symbol(str_, sizeof(str_)-1, \
 		[](char const *s_, size_t size_) -> symbol_base_t* { return new symbol_infix_t(s_, size_, lbp_); }); \
 
+
 class symbol_infix_t : public symbol_base_t {
 public:
 	symbol_infix_t(char const *str_, size_t size_, int lbp_) :
+			symbol_base_t(str_, size_, lbp_) { }
+
+	virtual symbol_base_t *nud(parse_state_t &);
+	virtual symbol_base_t *led(parse_state_t &ps, symbol_base_t *left);
+};
+
+class symbol_prefix_t : public symbol_base_t {
+public:
+	symbol_prefix_t(char const *str_, size_t size_, int lbp_) :
 			symbol_base_t(str_, size_, lbp_) { }
 
 	virtual symbol_base_t *nud(parse_state_t &);

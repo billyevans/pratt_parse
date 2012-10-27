@@ -22,6 +22,30 @@ symbol_base_t *symbol_table_t::get_symbol(char const *str, size_t size) const
     }
 }
 
+symbol_base_t *symbol_infix_t::nud(parse_state_t &)
+{
+    return this;
+}
+
+symbol_base_t *symbol_infix_t::led(parse_state_t &ps, symbol_base_t *left)
+{
+    first = left;
+    second = ps.expression(lbp);
+    return this;
+}
+
+symbol_base_t *symbol_prefix_t::nud(parse_state_t &ps)
+{
+    first = ps.expression(bp)
+    second = NULL;
+	return this;
+}
+
+symbol_base_t *symbol_prefix_t::led(parse_state_t &, symbol_base_t *)
+{
+	return this;
+}
+
 symbol_base_t *symbol_value_t::nud(parse_state_t &)
 {
     return this;
@@ -30,16 +54,4 @@ symbol_base_t *symbol_value_t::nud(parse_state_t &)
 symbol_base_t *symbol_value_t::led(parse_state_t &, symbol_base_t *)
 {
     return this;
-}
-
-symbol_base_t *symbol_infix_t::nud(parse_state_t &)
-{
-	return this;
-}
-
-symbol_base_t *symbol_infix_t::led(parse_state_t &ps, symbol_base_t *left)
-{
-    first = left;
-	second = ps.expression(lbp);
-	return this;
 }
