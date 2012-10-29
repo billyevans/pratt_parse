@@ -9,7 +9,7 @@ class parse_state_t;
 class symbol_base_t {
 public:
 	symbol_base_t(char const *str_, size_t size_, int lbp_ = 0) :
-			str(str_), size(size_), lbp(lbp_), first(NULL), second(NULL) { }
+			str(str_), size(size_), first(NULL), second(NULL), lbp(lbp_)  { }
 
 	void print() {
 		printf("%s\n", str);
@@ -37,6 +37,10 @@ public:
 #define INFIX(st_, str_, lbp_) \
 	st_.add_symbol(str_, sizeof(str_)-1, \
 		[](char const *s_, size_t size_) -> symbol_base_t* { return new symbol_infix_t(s_, size_, lbp_); }); \
+
+#define PREFIX(st_, str_, lbp_) \
+	st_.add_symbol(str_, sizeof(str_)-1, \
+		[](char const *s_, size_t size_) -> symbol_base_t* { return new symbol_prefix_t(s_, size_, lbp_); }); \
 
 
 class symbol_infix_t : public symbol_base_t {

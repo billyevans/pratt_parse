@@ -36,7 +36,7 @@ symbol_base_t *symbol_infix_t::led(parse_state_t &ps, symbol_base_t *left)
 
 symbol_base_t *symbol_prefix_t::nud(parse_state_t &ps)
 {
-    first = ps.expression(bp)
+    first = ps.expression(lbp);
     second = NULL;
 	return this;
 }

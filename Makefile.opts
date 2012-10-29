@@ -1,0 +1,35 @@
+define EXTOPTS
+ARCH := $(shell uname -m | sed -e s/i.86/i386/)
+PLATFORM := $(shell uname -s)
+endef
+
+$(eval $(call EXTOPTS))
+
+ifeq ($(ARCH),i386)
+CARCHFLAGS = -march=i486 -mtune=i686 -fno-strength-reduce
+endif
+
+ifeq ($(ARCH),x86_64)
+CARCHFLAGS = -march=nocona -fno-omit-frame-pointer
+endif
+
+CC = gcc
+CXX = g++
+
+ifeq ($(PLATFORM), Darwin)
+CC = clang
+CXX = clang++
+endif
+
+OPT = 2
+DEBUG = -g
+CFLAGS = -O$(OPT) -I. -W -Wall -Werror -Wstrict-prototypes -Wswitch-enum \
+		-Wmissing-field-initializers -D_GNU_SOURCE=1 \
+		$(DEBUG) $(CARCHFLAGS) \
+		-Wundef -MD -MF deps/$(subst /,%,$(@)).d
+
+CXXFLAGS = -O$(OPT) -I. -W -Wall -Werror -std=gnu++0x -D_GNU_SOURCE=1 \
+		-Wsign-promo -Woverloaded-virtual \
+		-Wno-ctor-dtor-privacy -Wno-non-virtual-dtor -Wno-deprecated \
+		-Wundef -MD -MF deps/$(subst /,%,$(@)).d \
+		$(DEBUG) $(CARCHFLAGS)
