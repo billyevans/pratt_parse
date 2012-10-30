@@ -50,7 +50,7 @@ symbol_base_t *parse_state_t::get_next_token()
 	enum char_type start_type, cur_type;
 	symbol_base_t *prev_token;
 
-	for (p = pos; p && (*p) && !word_end; ++p) {
+	for (p = pos; p < pos_end && !word_end; ++p) {
 		cur_type = get_char_type(*p);
 		if (cur_type != CHAR_TYPE_SPACE) {
 			// inside word
@@ -66,9 +66,6 @@ symbol_base_t *parse_state_t::get_next_token()
 				word_end = p;
 		}
 	}
-
-	if (!p)
-		throw std::runtime_error("wrong string");
 
 	if (word && !word_end)
 		word_end = p;
@@ -95,10 +92,13 @@ symbol_base_t *parse_state_t::expression(int rbp)
 	return left;
 }
 
-symbol_base_t *parse_state_t::parse(char const *str)
+symbol_base_t *parse_state_t::parse(char const *str, size_t size)
 {
+	if (!str || !size)
+		throw std::runtime_error("wrong string");
+
 	pos = str;
-	//first = NULL;
+	pos_end = pos + size;
 
 	get_next_token();
 	return expression();

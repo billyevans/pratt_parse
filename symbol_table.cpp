@@ -34,6 +34,18 @@ symbol_base_t *symbol_infix_t::led(parse_state_t &ps, symbol_base_t *left)
     return this;
 }
 
+symbol_base_t *symbol_infix_r_t::nud(parse_state_t &)
+{
+    return this;
+}
+
+symbol_base_t *symbol_infix_r_t::led(parse_state_t &ps, symbol_base_t *left)
+{
+    first = left;
+    second = ps.expression(lbp-1);
+    return this;
+}
+
 symbol_base_t *symbol_prefix_t::nud(parse_state_t &ps)
 {
     first = ps.expression(lbp);

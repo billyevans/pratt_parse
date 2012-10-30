@@ -3,7 +3,7 @@
 #include "symbol_table.h"
 
 class parse_state_t {
-	char const *pos;
+	char const *pos, *pos_end;
 	symbol_base_t *token;
 	symbol_table_t const &st;
 
@@ -42,9 +42,9 @@ class parse_state_t {
 
 //	int err;
 public:
-	parse_state_t(symbol_table_t const &symb) : pos(NULL), token(NULL), st(symb)	 { }
+	parse_state_t(symbol_table_t const &symb) : pos(NULL), pos_end(NULL), token(NULL), st(symb) { }
 	virtual ~parse_state_t() { }
 
 	symbol_base_t *expression(int rbp = 0);
-	symbol_base_t *parse(char const *str);
+	symbol_base_t *parse(char const *str, size_t size);
 };

@@ -8,7 +8,7 @@ class parse_state_t;
 
 class symbol_base_t {
 public:
-	symbol_base_t(char const *str_, size_t size_, int lbp_ = 0) :
+	symbol_base_t(char const *str_, size_t size_, int lbp_) :
 			str(str_), size(size_), first(NULL), second(NULL), lbp(lbp_)  { }
 
 	void print() {
@@ -34,9 +34,17 @@ public:
 	virtual symbol_base_t *led(parse_state_t &ps, symbol_base_t *left) = 0;
 };
 
+#define SYMBOL(st_, str_, lbp_) \
+	st_.add_symbol(str_, sizeof(str_)-1, \
+		[](char const *s_, size_t size_) -> symbol_base_t* { return new symbol_value_t(s_, size_, lbp_); }); \
+
 #define INFIX(st_, str_, lbp_) \
 	st_.add_symbol(str_, sizeof(str_)-1, \
 		[](char const *s_, size_t size_) -> symbol_base_t* { return new symbol_infix_t(s_, size_, lbp_); }); \
+
+#define INFIX_R(st_, str_, lbp_) \
+	st_.add_symbol(str_, sizeof(str_)-1, \
+		[](char const *s_, size_t size_) -> symbol_base_t* { return new symbol_infix_r_t(s_, size_, lbp_); }); \
 
 #define PREFIX(st_, str_, lbp_) \
 	st_.add_symbol(str_, sizeof(str_)-1, \
@@ -46,6 +54,15 @@ public:
 class symbol_infix_t : public symbol_base_t {
 public:
 	symbol_infix_t(char const *str_, size_t size_, int lbp_) :
+			symbol_base_t(str_, size_, lbp_) { }
+
+	virtual symbol_base_t *nud(parse_state_t &);
+	virtual symbol_base_t *led(parse_state_t &ps, symbol_base_t *left);
+};
+
+class symbol_infix_r_t : public symbol_base_t {
+public:
+	symbol_infix_r_t(char const *str_, size_t size_, int lbp_) :
 			symbol_base_t(str_, size_, lbp_) { }
 
 	virtual symbol_base_t *nud(parse_state_t &);
@@ -81,7 +98,7 @@ private:
 		size_t size;
 		str_t(char const *s_, size_t size_) : s(s_), size(size_) { }
 		bool operator < (str_t const &r) const {
-			return (size < r.size || (size == r.size && memcmp(s, r.s, size)) < 0);
+			return (size < r.size || (size == r.size && memcmp(s, r.s, size) < 0));
 		}
 	};
 	std::map<str_t, create_callback> table;

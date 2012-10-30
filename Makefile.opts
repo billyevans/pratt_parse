@@ -28,7 +28,7 @@ CFLAGS = -O$(OPT) -I. -W -Wall -Werror -Wstrict-prototypes -Wswitch-enum \
 		$(DEBUG) $(CARCHFLAGS) \
 		-Wundef -MD -MF deps/$(subst /,%,$(@)).d
 
-CXXFLAGS = -O$(OPT) -I. -W -Wall -Werror -std=gnu++0x -D_GNU_SOURCE=1 \
+CXXFLAGS = -O$(OPT) -I. -W -Wall -Werror -std=c++0x -D_GNU_SOURCE=1 \
 		-Wsign-promo -Woverloaded-virtual \
 		-Wno-ctor-dtor-privacy -Wno-non-virtual-dtor -Wno-deprecated \
 		-Wundef -MD -MF deps/$(subst /,%,$(@)).d \
