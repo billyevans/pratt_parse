@@ -18,7 +18,7 @@ TARGETS += $(EXAMPLE)
 $(LIB): $(OBJECTS_LIB)
 	ar crs $(@) $(^)
 
-$(EXAMPLE): $(LIB) $(SOURCES_EXAMPLE)
+$(EXAMPLE): $(SOURCES_EXAMPLE) $(LIB)
 	$(CXX) $(CXXFLAGS) -o $(@) $(^)
 
 $(OBJECTS_C): $(OBJECTS_CXX): $(TARGETS) $(TMPS): Makefile.opts

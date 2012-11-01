@@ -1,6 +1,6 @@
+#include <stdio.h>
 #include "symbol_table.h"
 #include "parse_state.h"
-
 
 
 static int calc(symbol_base_t *root)
@@ -56,7 +56,7 @@ int main()
 	{
 		parse_state_t ps(st);
 
-		symbol_base_t *root = ps.parse("1 + 2*13 - 8", sizeof("1 + 2*13 + 8")-1);
+		symbol_base_t *root = ps.parse("1 + 2*13 - 8", sizeof("1 + 2*13 - 8")-1);
 		printf ("%d\n", calc(root));
 		//root->print();
 		delete root;

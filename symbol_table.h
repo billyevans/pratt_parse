@@ -11,13 +11,6 @@ public:
 	symbol_base_t(char const *str_, size_t size_, int lbp_) :
 			str(str_), size(size_), first(NULL), second(NULL), lbp(lbp_)  { }
 
-	void print() {
-		printf("%s\n", str);
-		if (first)
-			first->print();
-		if (second)
-			second->print();
-	}
 	virtual ~symbol_base_t() {
 		if (first) 
 			delete first;
