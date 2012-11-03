@@ -58,6 +58,20 @@ symbol_base_t *symbol_prefix_t::led(parse_state_t &, symbol_base_t *)
 	return this;
 }
 
+symbol_base_t *symbol_pre_in_fix_t::nud(parse_state_t &ps)
+{
+    first = ps.expression(pre_lbp);
+    second = NULL;
+    return this;
+}
+
+symbol_base_t *symbol_pre_in_fix_t::led(parse_state_t &ps, symbol_base_t *left)
+{
+    first = left;
+    second = ps.expression(in_lbp);
+    return this;
+}
+
 symbol_base_t *symbol_value_t::nud(parse_state_t &)
 {
     return this;

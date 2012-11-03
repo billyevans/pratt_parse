@@ -43,6 +43,9 @@ public:
 	st_.add_symbol(str_, sizeof(str_)-1, \
 		[](char const *s_, size_t size_) -> symbol_base_t* { return new symbol_prefix_t(s_, size_, lbp_); }); \
 
+#define PRE_IN_FIX(st_, str_, pre_lbp_, in_lbp_) \
+	st_.add_symbol(str_, sizeof(str_)-1, \
+		[](char const *s_, size_t size_) -> symbol_base_t* { return new symbol_pre_in_fix_t(s_, size_, pre_lbp_, in_lbp_); }); \
 
 class symbol_infix_t : public symbol_base_t {
 public:
@@ -68,6 +71,16 @@ public:
 			symbol_base_t(str_, size_, lbp_) { }
 
 	virtual symbol_base_t *nud(parse_state_t &);
+	virtual symbol_base_t *led(parse_state_t &ps, symbol_base_t *left);
+};
+
+class symbol_pre_in_fix_t : public symbol_base_t {
+	int pre_lbp, in_lbp;
+public:
+	symbol_pre_in_fix_t(char const *str_, size_t size_, int pre_lbp_, int in_lbp_) :
+			symbol_base_t(str_, size_, std::max(pre_lbp_, in_lbp_)), pre_lbp(pre_lbp_),in_lbp(in_lbp_) { }
+
+	virtual symbol_base_t *nud(parse_state_t &ps);
 	virtual symbol_base_t *led(parse_state_t &ps, symbol_base_t *left);
 };
 

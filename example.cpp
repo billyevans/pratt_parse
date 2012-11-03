@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <math.h>
+
 #include "symbol_table.h"
 #include "parse_state.h"
 
@@ -6,60 +8,99 @@
 static int calc(symbol_base_t *root)
 {
 	int left = -500, right = -500;
+	bool left_valid = false;
+	bool right_valid = false;
 
 	if (root->first) {
 		left = calc(root->first);
+		left_valid = true;
 	}
 
 	if (root->second) {
 		right = calc(root->second);
+		right_valid = true;
 	}
 
 	switch(*root->str) {
 		default:
 			return strtol(root->str, NULL, 10);
 		case '+':
-			return left + right;
+			if (left_valid && right_valid)
+				return left + right;
+			else if (left_valid)
+				return left;
 		case '-':
-			return left - right;
+			if (left_valid && right_valid)
+				return left - right;
+			else if (left_valid)
+				return -left;
 		case '*':
-			return left * right;
+			if (root->size == 1) {
+				return left * right;
+			} else if (root->size == 2 && root->str[1] == '*') { // '**'
+				return pow(left, right);
+			}
 		case '/':
 			return left / right;
 		case '%':
 			return left % right;
+		case '~':
+			return ~left;
+		case '|':
+			return left | right;
+		case '&':
+			return left & right;
+		case '^':
+			return left ^ right;
+		case '<':
+			if (root->size == 2 && root->str[1] == '<')
+				return left << right;
+		case '>':
+			if (root->size == 2 && root->str[1] == '>')
+				return left >> right;
 	}
 	return -1;
 }
 
-int main()
+int main(int argc, char **argv)
 {
 
 	symbol_table_t st;
 
 	// add symbols to st;
 
-	INFIX(st, "+", 110);
-	INFIX(st, "-", 110);
+	PRE_IN_FIX(st, "+", 130, 110);
+	PRE_IN_FIX(st, "-", 130, 110);
 
 	INFIX(st, "*", 120);
 	INFIX(st, "/", 120);
 	INFIX(st, "%", 120);
 
-//	PREFIX(st, "-", 130);
-//	PREFIX(st, "+", 130);
+	INFIX(st, "|", 70);
+	INFIX(st, "^", 80);
+	INFIX(st, "&", 90);
 
-//	INFIX_R(st, "**", 140);
+	INFIX(st, "<<", 100);
+	INFIX(st, ">>", 100);
+
+	PREFIX(st, "~", 130);
+
+	INFIX_R(st, "**", 140);
 
 //	SYMBOL(st, "(", 150);
-	//usage
+	// usage
 	{
-		parse_state_t ps(st);
+		//char line[500];
+		if (argc != 2)
+			return 1;
+		char *line = argv[1];
+		//while (fgets(line, sizeof(line), stdin)) {
+			parse_state_t ps(st);
+			symbol_base_t *root = ps.parse(line, strlen(line));
+			printf ("%d\n", calc(root));
 
-		symbol_base_t *root = ps.parse("1 + 2*13 - 8", sizeof("1 + 2*13 - 8")-1);
-		printf ("%d\n", calc(root));
-		//root->print();
-		delete root;
+			delete root;
+		//}
 	}
 
 	return 0;
